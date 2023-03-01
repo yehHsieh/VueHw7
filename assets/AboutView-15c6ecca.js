@@ -1,0 +1,1 @@
+import{_ as t,o as a,c as o,b as s,t as n,e as _}from"./index-c3d3abec.js";const c={data(){return{data:{}}},mounted(){}},r={class:"about"},i=_("h1",null,"This is an about page",-1);function d(u,p,l,f,e,b){return a(),o("div",r,[i,s(" "+n(e.data),1)])}const m=t(c,[["render",d]]);export{m as default};
