@@ -51,7 +51,7 @@
             </tr>
         </tbody>
     </table>
-    <Pagination :pages="pagination" @emit-pages="getProducts"></Pagination>
+    <!-- <Pagination :pages="pagination" @emit-pages="getProducts"></Pagination> -->
     <!-- Modal -->
     <product-modal @update-product="updateProduct" :product="tempProduct" :isNew="isNew" ref="productModal" />
 
@@ -87,6 +87,7 @@
 <script>
 import ProductModal from '../../components/ProductModal.vue';
 import Pagination from '../../components/Pagination.vue';
+const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env;
 export default {
     data() {
         return {
@@ -118,42 +119,75 @@ export default {
             });
         },
         openModal(isNew, item) {
-            if (isNew) {
+            if (isNew === true) {
                 this.tempProduct = {};
                 this.isNew = true;
-            } else {
+            }  else if (isNew === "edit") {
                 this.tempProduct = { ...item };
                 this.isNew = false;
+                
+            } else if (isNew === 'delete') {
+                this.tempProduct = { ...item };
+                delProductModal.show()
             }
             const productComponent = this.$refs.productModal;
-            console.log(this.$refs)
             productComponent.openModal();
         },
-        updateProduct(item) {
-            console.log(item)
-            this.tempProduct = item;
-            let api = `${import.meta.env.VITE_APP_URL}api/${import.meta.env.VITE_APP_PATH}/admin/product`;
-            this.isLoading = true;
-            let httpMethod = 'post';
-            let status = '新增產品';
+        updateProduct() {
+            let http = "post";
+            let api = `${VITE_APP_URL}v2/api/${VITE_APP_PATH}/admin/product`;
+
             if (!this.isNew) {
-                api = `${import.meta.env.VITE_APP_URL}api/${import.meta.env.VITE_APP_PATH}/admin/product/${this.tempProduct.id}`;
-                httpMethod = 'put';
-                status = '更新產品';
-                // console.log(this.tempProduct)
-                this.products = res.data.products;
-                this.pagination = res.data.pagination;
+                http = "put";
+                api = `${VITE_APP_URL}v2/api/${VITE_APP_PATH}/admin/product/${tempProduct.id}`;
             }
-            const productComponent = this.$refs.productModal;
-            this.$http[httpMethod](api, { data: this.tempProduct }).then((response) => {
-                this.isLoading = false;
-                // this.$httpMessageState(response, status);
-                productComponent.hideModal();
-                this.getProducts(this.currentPage);
-            }).catch((error) => {
-                this.isLoading = false;
-                // this.$httpMessageState(error.response, status);
-            });
+            this.$http[http](api, {
+                data: this.tempProduct
+            }).then((response) => {
+                alert(response.data.message);
+                productModal.hide();
+                this.getData();
+            }).catch((err) => {
+                alert(err.data.message);
+            })
+        },
+        // updateProduct(item) {
+        //     // console.log(item)
+        //     this.tempProduct = item;
+        //     let api = `${import.meta.env.VITE_APP_URL}api/${import.meta.env.VITE_APP_PATH}/admin/product`;
+        //     this.isLoading = true;
+        //     let httpMethod = 'post';
+        //     let status = '新增產品';
+        //     if (!this.isNew) {
+        //         console.log(this.tempProduct)
+        //         api = `${import.meta.env.VITE_APP_URL}api/${import.meta.env.VITE_APP_PATH}/admin/product/${this.tempProduct.id}`;
+        //         httpMethod = 'put';
+        //         status = '更新產品';
+        //         console.log(this.tempProduct)
+        //         this.products = res.data.products;
+        //         this.pagination = res.data.pagination;
+        //     }
+        //     const productComponent = this.$refs.productModal;
+        //     this.$http[httpMethod](api, { data: this.tempProduct }).then((response) => {
+        //         this.isLoading = false;
+        //         // this.$httpMessageState(response, status);
+        //         productComponent.hideModal();
+        //         this.getProducts(this.currentPage);
+        //     }).catch((error) => {
+        //         this.isLoading = false;
+        //         // this.$httpMessageState(error.response, status);
+        //     });
+        // },
+        delProduct() {
+            this.$http.delete(`${VITE_APP_URL}/api/${VITE_APP_PATH}/admin/product/${this.tempProduct.id}`)
+                .then((res) => {
+                    alert(res.data.message);
+                    delProductModal.hide();
+                    this.getData();
+                })
+                .catch((err) => {
+                    alert(err.response.data.message);
+                })
         },
     },
     created() {
