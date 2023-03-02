@@ -80,6 +80,7 @@
             </div>
         </div>
     </div>
+    {{ products }}
 </template>
 
 
@@ -113,7 +114,7 @@ export default {
 
             }).catch((error) => {
                 this.isLoading = false;
-                this.$httpMessageState(error.response, '錯誤訊息');
+                // this.$httpMessageState(error.response, '錯誤訊息');
             });
         },
         openModal(isNew, item) {
@@ -129,6 +130,7 @@ export default {
             productComponent.openModal();
         },
         updateProduct(item) {
+            console.log(item)
             this.tempProduct = item;
             let api = `${import.meta.env.VITE_APP_URL}api/${import.meta.env.VITE_APP_PATH}/admin/product`;
             this.isLoading = true;
@@ -138,6 +140,9 @@ export default {
                 api = `${import.meta.env.VITE_APP_URL}api/${import.meta.env.VITE_APP_PATH}/admin/product/${this.tempProduct.id}`;
                 httpMethod = 'put';
                 status = '更新產品';
+                // console.log(this.tempProduct)
+                this.products = res.data.products;
+                this.pagination = res.data.pagination;
             }
             const productComponent = this.$refs.productModal;
             this.$http[httpMethod](api, { data: this.tempProduct }).then((response) => {

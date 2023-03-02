@@ -141,7 +141,7 @@ export default {
     },
     emits: ['update-product'],
     mixins: [modalMixin],
-    inject: ['emitter'],
+    // inject: ['emitter'],
     watch: {
         product() {
             this.tempProduct = this.product;
@@ -169,18 +169,18 @@ export default {
                 if (response.data.success) {
                     this.tempProduct.imageUrl = response.data.imageUrl;
                     this.$refs.fileInput.value = '';
-                    this.emitter.emit('push-message', {
-                        style: 'success',
-                        title: '圖片上傳結果',
-                        content: response.data.message,
-                    });
+                    // this.emitter.emit('push-message', {
+                    //     style: 'success',
+                    //     title: '圖片上傳結果',
+                    //     content: response.data.message,
+                    // });
                 } else {
                     this.$refs.fileInput.value = '';
-                    this.emitter.emit('push-message', {
-                        style: 'danger',
-                        title: '圖片上傳結果',
-                        content: response.data.message,
-                    });
+                    // this.emitter.emit('push-message', {
+                    //     style: 'danger',
+                    //     title: '圖片上傳結果',
+                    //     content: response.data.message,
+                    // });
                 }
             }).catch((error) => {
                 this.status.fileUploading = false;
