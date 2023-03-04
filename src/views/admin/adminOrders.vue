@@ -51,10 +51,12 @@
         </tbody>
     </table>
     <OrderModal :order="tempOrder" ref="orderModal" @update-paid="updatePaid"></OrderModal>
+    <DelModal :item="tempOrder" ref="delModal" @del-item="delOrder"></DelModal>
 </template>
 
 <script>
 import OrderModal from '../../components/OrderModal.vue'
+import DelModal from '../../components/DelModal.vue';
 
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env;
 
@@ -71,6 +73,7 @@ export default {
     },
     components: {
         OrderModal,
+        DelModal,
     },
     methods: {
         getOrders(currentPage = 1) {
@@ -108,8 +111,23 @@ export default {
             const orderComponent = this.$refs.orderModal;
             orderComponent.openModal();
         },
-        openDelOrderModal(item){
-
+        openDelOrderModal(item) {
+            this.tempOrder = { ...item };
+            const delComponent = this.$refs.delModal;
+            delComponent.openModal();
+        },
+        delOrder() {
+            const url = `${VITE_APP_URL}api/${VITE_APP_PATH}/admin/order/${this.tempOrder.id}`;
+            // this.isLoading = true;
+            this.$http.delete(url).then(() => {
+                // this.isLoading = false;
+                const delComponent = this.$refs.delModal;
+                delComponent.hideModal();
+                this.getOrders(this.currentPage);
+            }).catch((error) => {
+                // this.isLoading = false;
+                // this.$httpMessageState(error.response, '錯誤訊息');
+            });
         },
     },
     mounted() {
