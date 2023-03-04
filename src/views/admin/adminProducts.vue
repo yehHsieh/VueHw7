@@ -43,7 +43,7 @@
                         <button type="button" class="btn btn-outline-primary btn-sm" @click="openModal('edit', item)">
                             編輯
                         </button>
-                        <button type="button" class="btn btn-outline-danger btn-sm" @click="openModal('delete', item)">
+                        <button type="button" class="btn btn-outline-danger btn-sm" @click="openDelProductModal(item)">
                             刪除
                         </button>
                     </div>
@@ -54,38 +54,14 @@
     <!-- <Pagination :pages="pagination" @emit-pages="getProducts"></Pagination> -->
     <!-- Modal -->
     <product-modal @update-product="updateProduct" :product="tempProduct" :isNew="isNew" ref="productModal" />
-
-    <div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1" aria-labelledby="delProductModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content border-0">
-                <div class="modal-header bg-danger text-white">
-                    <h5 id="delProductModalLabel" class="modal-title">
-                        <span>刪除產品</span>
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    是否刪除
-                    <strong class="text-danger"></strong> 商品(刪除後將無法恢復)。
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        取消
-                    </button>
-                    <button type="button" class="btn btn-danger" @click="delProduct">
-                        確認刪除
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {{ products }}
+    <!-- DelModal -->
+    <DelModal :item="tempProduct" ref="delModal" @del-item="delProduct"></DelModal>
 </template>
 
 
 <script>
 import ProductModal from '../../components/ProductModal.vue';
+import DelModal from '../../components/DelModal.vue'
 import Pagination from '../../components/Pagination.vue';
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env;
 export default {
@@ -102,11 +78,12 @@ export default {
     components: {
         ProductModal,
         Pagination,
+        DelModal,
     },
     methods: {
         getProducts(page = 1) {
             this.currentPage = page;
-            const api = `${import.meta.env.VITE_APP_URL}api/${import.meta.env.VITE_APP_PATH}/admin/products?page=${page}`;
+            const api = `${VITE_APP_URL}api/${VITE_APP_PATH}/admin/products?page=${page}`;
             this.isLoading = true;
             this.$http.get(api).then((response) => {
                 this.products = response.data.products;
@@ -115,25 +92,27 @@ export default {
 
             }).catch((error) => {
                 this.isLoading = false;
-                // this.$httpMessageState(error.response, '錯誤訊息');
+                this.$httpMessageState(err.response.data.message);
             });
         },
         openModal(isNew, item) {
             if (isNew === true) {
                 this.tempProduct = {};
                 this.isNew = true;
-            }  else if (isNew === "edit") {
+            } else if (isNew === "edit") {
                 this.tempProduct = { ...item };
                 this.isNew = false;
-                
-            } else if (isNew === 'delete') {
-                this.tempProduct = { ...item };
-                delProductModal.show()
             }
+            console.log(this.$refs)
             const productComponent = this.$refs.productModal;
             productComponent.openModal();
         },
-        updateProduct() {
+        openDelProductModal(item) {
+            this.tempProduct = { ...item };
+            const delComponent = this.$refs.delModal;
+            delComponent.openModal();
+        },
+        updateProduct( tempProduct, productModal) {
             let http = "post";
             let api = `${VITE_APP_URL}v2/api/${VITE_APP_PATH}/admin/product`;
 
@@ -148,7 +127,7 @@ export default {
                 productModal.hide();
                 this.getData();
             }).catch((err) => {
-                alert(err.data.message);
+                alert(err.response.data.message);
             })
         },
         // updateProduct(item) {
@@ -178,11 +157,11 @@ export default {
         //         // this.$httpMessageState(error.response, status);
         //     });
         // },
-        delProduct() {
-            this.$http.delete(`${VITE_APP_URL}/api/${VITE_APP_PATH}/admin/product/${this.tempProduct.id}`)
+        delProduct(delModal) {
+            this.$http.delete(`${VITE_APP_URL}api/${VITE_APP_PATH}/admin/product/${this.tempProduct.id}`)
                 .then((res) => {
                     alert(res.data.message);
-                    delProductModal.hide();
+                    delModal.hide();
                     this.getData();
                 })
                 .catch((err) => {
@@ -190,7 +169,7 @@ export default {
                 })
         },
     },
-    created() {
+    mounted() {
         this.getProducts();
     },
 }

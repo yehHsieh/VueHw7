@@ -119,7 +119,7 @@
     </div>
 </template>
 <script>
-import modalMixin from '@/mixins/modalMixin';
+import modalMixin from '../mixins/modalMixin';
 
 export default {
     props: {
@@ -141,7 +141,7 @@ export default {
     },
     emits: ['update-product'],
     mixins: [modalMixin],
-    // inject: ['emitter'],
+    inject: ['emitter'],
     watch: {
         product() {
             this.tempProduct = this.product;

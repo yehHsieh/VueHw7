@@ -33,7 +33,6 @@ export default {
                     // this.getData();
                     if (!res.data.success) {
                         this.$router.push('/Login')
-                        console("c8 8c 8c ")
                     }
                 })
                 .catch((err) => {
