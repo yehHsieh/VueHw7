@@ -1,5 +1,6 @@
 <template>
     後臺產品列表
+    <Loading :active="isLoading" :z-index="1060"></Loading>
     <div class="container">
         <div class="text-end mt-4">
             <button class="btn btn-primary" @click="openModal(true)">
