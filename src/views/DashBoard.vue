@@ -7,14 +7,18 @@
 
     <!-- <router-link to="/admin">後台首頁</router-link> -->
     <hr />
-    <router-view></router-view>
+    <router-view v-if="status" />
 </template>
-  
 <script>
 const { VITE_APP_URL } = import.meta.env;
 import { RouterView, RouterLink } from 'vue-router';
 
 export default {
+    data() {
+        return {
+            status: false,
+        };
+    },
     components: {
         RouterView,
         RouterLink,
@@ -32,11 +36,19 @@ export default {
                 .then((res) => {
                     // this.getData();
                     if (!res.data.success) {
+                        alert('請先登入')
                         this.$router.push('/Login')
+                    }
+                    else {
+                        this.status = true;
+                        console.log("11212")
+                        console.log(this.status)
+                        console.log(res)
                     }
                 })
                 .catch((err) => {
                     alert("帳密錯誤")
+                    this.$router.push('/Login')
                 })
         },
     },

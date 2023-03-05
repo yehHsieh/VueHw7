@@ -43,17 +43,16 @@ export default {
                 username,
                 password
             };
-            this.$http.post(`${VITE_APP_URL}/v2/admin/signin`, this.user)
+            this.$http.post(`${VITE_APP_URL}v2/admin/signin`, this.user)
                 .then((res) => {
                     const { token, expired } = res.data;
                     document.cookie = `hexSchool = ${token};
                     expires = ${expired}`
                     this.$router.push('Admin/AdminProducts')
-                   
                 })
                 .catch((err) => {
                     console.log(err)
-                   
+                   alert("密碼錯誤")
                 });
         },
     },

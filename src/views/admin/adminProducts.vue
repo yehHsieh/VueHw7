@@ -51,7 +51,7 @@
             </tr>
         </tbody>
     </table>
-    <!-- <Pagination :pages="pagination" @emit-pages="getProducts"></Pagination> -->
+    <Pagination :pages="pagination" @emit-pages="getProducts"></Pagination>
     <!-- Modal -->
     <product-modal @update-product="updateProduct" :product="tempProduct" :isNew="isNew" ref="productModal" />
     <!-- DelModal -->

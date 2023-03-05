@@ -50,6 +50,7 @@
             </template>
         </tbody>
     </table>
+    <Pagination :pages="pagination" @emit-pages="getOrders"></Pagination>
     <OrderModal :order="tempOrder" ref="orderModal" @update-paid="updatePaid"></OrderModal>
     <DelModal :item="tempOrder" ref="delModal" @del-item="delOrder"></DelModal>
 </template>
@@ -57,6 +58,7 @@
 <script>
 import OrderModal from '../../components/OrderModal.vue'
 import DelModal from '../../components/DelModal.vue';
+import Pagination from '../../components/Pagination.vue';
 
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env;
 
@@ -74,6 +76,7 @@ export default {
     components: {
         OrderModal,
         DelModal,
+        Pagination,
     },
     methods: {
         getOrders(currentPage = 1) {

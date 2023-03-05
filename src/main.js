@@ -12,6 +12,7 @@ import {LoadingPlugin} from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
 
 
+
 const app = createApp(App)
 
 app.use(createPinia())
