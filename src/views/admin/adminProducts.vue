@@ -116,7 +116,7 @@ export default {
         updateProduct( tempProduct, productModal) {
             let http = "post";
             let api = `${VITE_APP_URL}v2/api/${VITE_APP_PATH}/admin/product`;
-
+            const productComponent = this.$refs.productModal;
             if (!this.isNew) {
                 http = "put";
                 api = `${VITE_APP_URL}v2/api/${VITE_APP_PATH}/admin/product/${tempProduct.id}`;
@@ -125,8 +125,8 @@ export default {
                 data: this.tempProduct
             }).then((response) => {
                 alert(response.data.message);
-                productModal.hide();
-                this.getData();
+                productComponent.hideModal();
+                this.getProducts(this.currentPage);
             }).catch((err) => {
                 alert(err.response.data.message);
             })
@@ -159,11 +159,12 @@ export default {
         //     });
         // },
         delProduct(delModal) {
+            const delComponent = this.$refs.delModal;
             this.$http.delete(`${VITE_APP_URL}api/${VITE_APP_PATH}/admin/product/${this.tempProduct.id}`)
                 .then((res) => {
                     alert(res.data.message);
-                    delModal.hide();
-                    this.getData();
+                    delComponent.hideModal();
+                this.getProducts(this.currentPage);
                 })
                 .catch((err) => {
                     alert(err.response.data.message);

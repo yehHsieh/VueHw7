@@ -23,6 +23,7 @@
             </div>
         </div>
     </div>
+    <vue-toastr ref="toastr"></vue-toastr>
 </template>
 
 <script>
@@ -49,10 +50,12 @@ export default {
                     document.cookie = `hexSchool = ${token};
                     expires = ${expired}`
                     this.$router.push('Admin/AdminProducts')
+                    // this.$refs.toastr.s("XXXXXX");
                 })
                 .catch((err) => {
                     console.log(err)
                    alert("密碼錯誤")
+                //    this.$refs.toastr.s("XXXXXX");
                 });
         },
     },
